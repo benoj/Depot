@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(:version => 20130222095645) do
 
-  create_table "producs", :force => true do |t|
+  create_table "products", :force => true do |t|
     t.string   "title"
     t.text     "description"
     t.string   "image_url"
