@@ -11,7 +11,7 @@ task :test_and_add_files => [ :add_files_to_commit]
 
 task :test_deploy, :message do | t, args|
 	Rake::Task[:test_and_add_files].invoke
-	system "git commit  -a -m #{args.message}"
+	sh "git commit  -a -m #{args.message}"
 	Rake::Task[:publish_to_github].invoke
 	Rake::Task[:deploy_to_heroku].invoke
 end
