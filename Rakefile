@@ -7,11 +7,12 @@ require File.expand_path('../config/application', __FILE__)
 Depot::Application.load_tasks
 
 
-task :test_and_add_files => [ :add_files_to_commit]
+task :test_and_add_files => [:test,:add_files_to_commit]
 
 task :test_deploy, :message do | t, args|
 	Rake::Task[:test_and_add_files].invoke
-	sh "git commit  -a -m #{args.message}"
+	git = GitRepository.new
+	git.commit("this is a test")
 	Rake::Task[:publish_to_github].invoke
 	Rake::Task[:deploy_to_heroku].invoke
 end
@@ -27,4 +28,12 @@ end
 task :deploy_to_heroku do
 	`git push heroku master`
 	`heroku run rake db:migrate`
+end
+
+
+class GitRepository
+	def commit(message)
+		puts "git commit -m '#{message}'"
+		 system "git commit -m '#{message}'"
+	end
 end
