@@ -26,6 +26,6 @@ task :publish_to_github do
 end
 
 task :deploy_to_heroku do
-	`git push Depot master`
+	`git push depot master`
 	`heroku run rake db:migrate`
 end
