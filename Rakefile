@@ -24,8 +24,8 @@ task :push_to_origin do
 end
 
 task :deploy_to_heroku do
-	
 	heroku = GitRepository.new(:remote => "heroku")
+	heroku.push
 	`heroku run rake db:setup`
 end
 
