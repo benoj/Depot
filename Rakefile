@@ -6,12 +6,15 @@ require File.expand_path('../config/application', __FILE__)
 
 Depot::Application.load_tasks
 
+task :heroku_setup do
+	sh "heroku git:remote -a evening-wave-3621"
+end
 task :test_deploy, :message do | t, args|
 	@git = GitRepository.new
 	Rake::Task[:test].invoke
 	commit(args.message,@git)
 	Rake::Task[:push_to_origin].invoke
-	#Rake::Task[:deploy_to_heroku].invoke
+	Rake::Task[:deploy_to_heroku].invoke
 end
 
 
@@ -21,10 +24,10 @@ task :push_to_origin do
 end
 
 task :deploy_to_heroku do
-	`git push heroku master`
-	`heroku run rake db:migrate`
+	
+	heroku = GitRepository.new(:remote => "heroku")
+	`heroku run rake db:setup`
 end
-
 
 def commit(message,git_repository)
         if(git_repository.has_untracked?)
