@@ -6,23 +6,18 @@ require File.expand_path('../config/application', __FILE__)
 
 Depot::Application.load_tasks
 
-
-task :test_and_add_files => [:test,:add_files_to_commit]
-
 task :test_deploy, :message do | t, args|
-	Rake::Task[:test_and_add_files].invoke
-	git = GitRepository.new
-	git.commit("this is a test")
-	Rake::Task[:publish_to_github].invoke
-	Rake::Task[:deploy_to_heroku].invoke
+	@git = GitRepository.new
+	Rake::Task[:test].invoke
+	commit(args.message,@git)
+	Rake::Task[:push_to_origin].invoke
+	#Rake::Task[:deploy_to_heroku].invoke
 end
 
-task :add_files_to_commit do
-	sh "git add ."
-end
 
-task :publish_to_github do
-	sh "git push depot master"
+
+task :push_to_origin do
+	@git.push
 end
 
 task :deploy_to_heroku do
@@ -31,9 +26,11 @@ task :deploy_to_heroku do
 end
 
 
-class GitRepository
-	def commit(message)
-		puts "git commit -m '#{message}'"
-		 system "git commit -m '#{message}'"
-	end
+def commit(message,git_repository)
+        if(git_repository.has_untracked?)
+                git_repository.add
+        end
+        if(git_repository.has_changes?)
+                git_repository.commit(:message => message, :options => "-a")
+        end
 end
