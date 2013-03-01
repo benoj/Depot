@@ -9,9 +9,9 @@ group :development, :test do
 end
 
 gem 'heroku'
-group :production, :staging do
-	gem 'pg'
- end
+# group :production, :staging do
+# 	gem 'pg'
+#  end
 
 # Gems used only for assets and not required
 # in production environments by default.
